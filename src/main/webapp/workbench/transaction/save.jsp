@@ -138,6 +138,7 @@ request.getContextPath() + "/";
             }
         })
 
+
         $("#submitActivityBtn").click(function () {
             var activityId = $("input[name=activity]:checked").val();
             var activityName = $("#"+activityId).html();
