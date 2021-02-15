@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="log4j">
+    <CLASSES>
+      <root url="file://D:/下载/百度网盘下载/CRM项目/资源/4_CRM项目/resource/jar&amp;properties/log4j" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://D:/下载/百度网盘下载/CRM项目/资源/4_CRM项目/resource/jar&amp;properties/log4j" recursive="false" />
+  </library>
+</component>

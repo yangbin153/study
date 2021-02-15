@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+ namespace：必须有值，自定义的唯一字符串
+ 推荐使用：dao 接口的全限定名称
+-->
+<mapper namespace="com.yangbin.crm.workbench.dao.ClueDao">
+    <!--
+    <select>: 查询数据， 标签中必须是 select 语句
+    id: sql 语句的自定义名称，推荐使用 dao 接口中方法名称，
+    使用名称表示要执行的 sql 语句
+    resultType: 查询语句的返回结果数据类型，使用全限定类名
+    -->
+
+    <delete id="deleteClueById">
+        delete from tbl_clue where id = #{id}
+    </delete>
+
+    <delete id="deleteClue">
+        delete from tbl_clue where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="detail" resultType="Clue">
+        select
+        c.id,
+        c.fullname,
+        c.appellation,
+        u.name as owner,
+        c.company,
+        c.job,
+        c.email,
+        c.phone,
+        c.website,
+        c.mphone,
+        c.state,
+        c.source,
+        c.createBy,
+        c.createTime,
+        c.editBy,
+        c.editTime,
+        c.description,
+        c.contactSummary,
+        c.nextContactTime,
+        c.address
+        from tbl_clue c
+        join tbl_user u on c.owner = u.id
+        where c.id = #{id}
+    </select>
+
+    <update id="updateClue">
+        update tbl_clue set
+        fullname=#{fullname},
+        appellation=#{appellation},
+        owner=#{owner},
+        company=#{company},
+        job=#{job},
+        email=#{email},
+        phone=#{phone},
+        website=#{website},
+        mphone=#{mphone},
+        state=#{state},
+        source=#{source},
+        editBy=#{editBy},
+        editTime=#{editTime},
+        description=#{description},
+        contactSummary=#{contactSummary},
+        nextContactTime=#{nextContactTime},
+        address=#{address}
+        where id = #{id}
+    </update>
+
+    <select id="getClueById" resultType="Clue">
+        select
+        *
+        from tbl_clue
+        where id = #{id}
+    </select>
+
+    <insert id="saveClue">
+        insert into tbl_clue (
+        id,
+        fullname,
+        appellation,
+        owner,
+        company,
+        job,
+        email,
+        phone,
+        website,
+        mphone,
+        state,
+        source,
+        createBy,
+        createTime,
+        editBy,
+        editTime,
+        description,
+        contactSummary,
+        nextContactTime,
+        address
+        ) values (
+        #{id},
+        #{fullname},
+        #{appellation},
+        #{owner},
+        #{company},
+        #{job},
+        #{email},
+        #{phone},
+        #{website},
+        #{mphone},
+        #{state},
+        #{source},
+        #{createBy},
+        #{createTime},
+        #{editBy},
+        #{editTime},
+        #{description},
+        #{contactSummary},
+        #{nextContactTime},
+        #{address}
+        );
+    </insert>
+
+    <select id="getTotal" resultType="int">
+        select COUNT(*) from tbl_clue c
+        join tbl_user u on c.owner = u.id
+        <where>
+            <if test="fullname !=null and fullname !=''">
+                c.fullname = #{fullname}
+            </if>
+            <if test="company !=null and company !=''">
+                and c.company = #{company}
+            </if>
+            <if test="phone !=null and phone !=''">
+                and c.phone = #{phone}
+            </if>
+            <if test="source !=null and source !=''">
+                and c.source = #{source}
+            </if>
+            <if test="owner !=null and owner !=''">
+                and u.name = #{owner}
+            </if>
+            <if test="mphone !=null and mphone !=''">
+                and c.mphone = #{mphone}
+            </if>
+            <if test="state !=null and state !=''">
+                and c.state = #{state}
+            </if>
+        </where>
+    </select>
+
+    <select id="getClueList" resultType="Clue">
+        <!--要执行的 sql 语句-->
+        select
+        c.id,
+        c.fullname,
+        c.appellation,
+        u.name as owner,
+        c.company,
+        c.job,
+        c.email,
+        c.phone,
+        c.website,
+        c.mphone,
+        c.state,
+        c.source,
+        c.createBy,
+        c.createTime,
+        c.editBy,
+        c.editTime,
+        c.description,
+        c.contactSummary,
+        c.nextContactTime,
+        c.address
+        from tbl_clue c
+        join tbl_user u on c.owner = u.id
+        <where>
+            <if test="fullname !=null and fullname !=''">
+                c.fullname = #{name}
+            </if>
+            <if test="company !=null and company !=''">
+                and c.company = #{company}
+            </if>
+            <if test="phone !=null and phone !=''">
+                and c.phone = #{phone}
+            </if>
+            <if test="source !=null and source !=''">
+                and c.source = #{source}
+            </if>
+            <if test="owner !=null and owner !=''">
+                and u.name = #{owner}
+            </if>
+            <if test="mphone !=null and mphone !=''">
+                and c.mphone = #{mphone}
+            </if>
+            <if test="state !=null and state !=''">
+                and c.state = #{state}
+            </if>
+        </where>
+        order by c.createTime desc limit #{pageCount},#{pageSize}
+    </select>
+</mapper>

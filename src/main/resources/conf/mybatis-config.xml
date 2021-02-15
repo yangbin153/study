@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+    </settings>
+    <!--设置别名-->
+    <typeAliases>
+        <package name="com.yangbin.crm.settings.domain"/>
+        <package name="com.yangbin.crm.workbench.domain"/>
+    </typeAliases>
+
+    <mappers>
+        <!--告诉 mybatis 要执行的 sql 语句的位置-->
+        <package name="com.yangbin.crm.settings.dao"/>
+        <package name="com.yangbin.crm.workbench.dao"/>
+    </mappers>
+</configuration>

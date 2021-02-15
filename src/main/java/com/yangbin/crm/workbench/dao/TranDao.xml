@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+ namespace：必须有值，自定义的唯一字符串
+ 推荐使用：dao 接口的全限定名称
+-->
+<mapper namespace="com.yangbin.crm.workbench.dao.TranDao">
+    <!--
+    <select>: 查询数据， 标签中必须是 select 语句
+    id: sql 语句的自定义名称，推荐使用 dao 接口中方法名称，
+    使用名称表示要执行的 sql 语句
+    resultType: 查询语句的返回结果数据类型，使用全限定类名
+    -->
+
+    <update id="changeStage">
+        update tbl_tran set
+        stage = #{stage},
+        editBy = #{editBy},
+        editTime = #{editTime}
+        where id = #{id}
+    </update>
+
+    <select id="getTranById" resultType="Tran">
+        select
+          t.id,
+          u.name as owner,
+          t.money,
+          t.name,
+          t.expectedDate,
+          cus.name as customerId,
+          t.stage,
+          t.type,
+          t.source,
+          a.name as activityId,
+          con.fullname as contactsId,
+          t.createBy,
+          t.createTime,
+          t.editBy,
+          t.editTime,
+          t.description,
+          t.contactSummary,
+          t.nextContactTime
+        from tbl_tran t
+        join tbl_user u on t.owner = u.id
+        join tbl_customer cus on t.customerId = cus.id
+        left join tbl_contacts con on t.contactsId = con.id
+        left join tbl_activity a on t.activityId = a.id
+        where t.id = #{id}
+    </select>
+
+    <select id="getTotal" resultType="int">
+        select COUNT(*) from tbl_tran t
+        join tbl_user u on t.owner = u.id
+        join tbl_customer cus on t.customerId = cus.id
+        left join tbl_contacts con on t.contactsId = con.id
+        <where>
+            <if test="owner != null and owner !=''">
+                u.name = #{owner}
+            </if>
+            <if test="name != null and name !=''">
+                and t.name = #{name}
+            </if>
+            <if test="company != null and company !=''">
+                and cus.name = #{company}
+            </if>
+            <if test="stage != null and stage !=''">
+                and t.stage = #{stage}
+            </if>
+            <if test="transactionType != null and transactionType !=''">
+                and t.type = #{transactionType}
+            </if>
+            <if test="source != null and source !=''">
+                and t.source = #{source}
+            </if>
+            <if test="contacts != null and contacts !=''">
+                and con.fullname = #{contacts}
+            </if>
+        </where>
+    </select>
+
+    <select id="getTranList" resultType="Tran">
+        select
+        t.id,
+        u.name as owner,
+        t.name,
+        cus.name as customerId,
+        t.stage,
+        t.type,
+        t.source,
+        con.fullname as contactsId
+        from tbl_tran t
+        join tbl_user u on t.owner = u.id
+        join tbl_customer cus on t.customerId = cus.id
+        left join tbl_contacts con on t.contactsId = con.id
+        <where>
+            <if test="owner != null and owner !=''">
+                u.name = #{owner}
+            </if>
+            <if test="name != null and name !=''">
+                and t.name = #{name}
+            </if>
+            <if test="company != null and company !=''">
+                and cus.name = #{company}
+            </if>
+            <if test="stage != null and stage !=''">
+                and t.stage = #{stage}
+            </if>
+            <if test="transactionType != null and transactionType !=''">
+                and t.type = #{transactionType}
+            </if>
+            <if test="source != null and source !=''">
+                and t.source = #{source}
+            </if>
+            <if test="contacts != null and contacts !=''">
+                and con.fullname = #{contacts}
+            </if>
+        </where>
+        order by t.createTime desc limit #{ignoreCount},#{pageSize}
+    </select>
+
+    <insert id="saveTran">
+        insert into tbl_tran (
+        id,
+        owner,
+        money,
+        name,
+        expectedDate,
+        customerId,
+        stage,
+        type,
+        source,
+        activityId,
+        contactsId,
+        createBy,
+        createTime,
+        editBy,
+        editTime,
+        description,
+        contactSummary,
+        nextContactTime
+        ) values (
+        #{id},
+        #{owner},
+        #{money},
+        #{name},
+        #{expectedDate},
+        #{customerId},
+        #{stage},
+        #{type},
+        #{source},
+        #{activityId},
+        #{contactsId},
+        #{createBy},
+        #{createTime},
+        #{editBy},
+        #{editTime},
+        #{description},
+        #{contactSummary},
+        #{nextContactTime}
+        );
+    </insert>
+
+    <!--<select id="" resultType="">
+        &lt;!&ndash;要执行的 sql 语句&ndash;&gt;
+        select
+    </select>-->
+</mapper>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+ namespace：必须有值，自定义的唯一字符串
+ 推荐使用：dao 接口的全限定名称
+-->
+<mapper namespace="com.yangbin.crm.workbench.dao.ActivityDao">
+    <!--
+    <select>: 查询数据， 标签中必须是 select 语句
+    id: sql 语句的自定义名称，推荐使用 dao 接口中方法名称，
+    使用名称表示要执行的 sql 语句
+    resultType: 查询语句的返回结果数据类型，使用全限定类名
+    -->
+    <!--<select id="" resultType="">
+        &lt;!&ndash;要执行的 sql 语句&ndash;&gt;
+        select
+    </select>-->
+
+    <select id="getActivityListByName" resultType="Activity">
+        select
+        a.id,
+        u.name as owner,
+        a.name,
+        a.startDate,
+        a.endDate
+        from tbl_activity a join tbl_user u on a.owner = u.id where a.name like '%' #{aname} '%'
+    </select>
+
+    <select id="getActivityListByNameAndClueId" resultType="Activity">
+        select
+        a.id,
+        u.name as owner,
+        a.name,
+        a.startDate,
+        a.endDate
+        from tbl_activity a join tbl_user u on a.owner = u.id
+        where a.name like '%' #{aname} '%' and a.id not in (
+        select activityId from tbl_clue_activity_relation where
+        clueId = #{clueId})
+
+    </select>
+
+    <select id="getActivityListByClueId" resultType="Activity">
+        select
+        r.id as id,
+        u.name as owner,
+        a.name,
+        a.startDate,
+        a.endDate
+        from tbl_activity a join tbl_user u on a.owner = u.id
+        join tbl_clue_activity_relation r on a.id = r.activityId
+        where r.clueId =#{clueId}
+    </select>
+
+    <select id="detail" resultType="Activity">
+        select
+        a.id,
+        u.name as owner,
+        a.name,
+        a.startDate,
+        a.endDate,
+        a.cost,
+        a.description,
+        a.createTime,
+        a.createBy,
+        a.editTime,
+        a.editBy
+        from tbl_activity a join tbl_user u on a.owner = u.id where a.id =#{id}
+    </select>
+
+    <delete id="deleteActivityByIds">
+        delete from tbl_activity where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="updateActivity">
+        update tbl_activity set
+        owner=#{owner},
+        name=#{name},
+        startDate=#{startDate},
+        endDate=#{endDate},
+        cost=#{cost},
+        description=#{description},
+        editTime=#{editTime},
+        editBy=#{editBy}
+        where id = #{id}
+    </update>
+
+    <select id="getActivityById" resultType="Activity">
+        select
+        a.id,
+        a.owner,
+        a.name,
+        a.startDate,
+        a.endDate,
+        a.cost,
+        a.description,
+        a.createTime,
+        a.createBy,
+        a.editTime,
+        a.editBy
+        from tbl_activity a join tbl_user u on a.owner = u.id where a.id =#{id}
+    </select>
+
+    <select id="getTotal" resultType="int">
+        select count(*) from tbl_activity a join tbl_user u on a.owner = u.id
+        <where>
+            <if test="name != null and name != ''">
+                a.name like '%' #{name} '%'
+            </if>
+            <if test="owner != null and owner != ''">
+                u.name like '%' #{owner} '%'
+            </if>
+            <if test="startDate !=null and startDate != ''">
+                a.startDate &gt; #{startDate}
+            </if>
+            <if test="endDate != null and endDate !=''">
+                a.endDate &lt; #{endDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="getActivityList" parameterType="map" resultType="Activity">
+        select
+        a.id,
+        a.name,
+        u.name as owner,
+        a.startDate,
+        a.endDate
+        from tbl_activity a join tbl_user u on a.owner = u.id
+        <where>
+            <if test="name != null and name !=''">
+                a.name like '%' #{name} '%'
+            </if>
+            <if test="owner != null and owner !=''">
+                and u.name like '%' #{owner} '%'
+            </if>
+            <if test="startDate !=null and startDate !=''">
+                and a.startDate &gt; #{startDate}
+            </if>
+            <if test="endDate != null and endDate !=''">
+                and a.endDate &lt; #{endDate}
+            </if>
+        </where>
+        order by a.createTime desc limit #{pageCount},#{pageSize}
+    </select>
+
+    <insert id="saveActivity">
+        insert into tbl_activity(
+        id,
+        owner,
+        name,
+        startDate,
+        endDate,
+        cost,
+        description,
+        createTime,
+        createBy,
+        editTime,
+        editBy
+        )values (
+        #{id},
+        #{owner},
+        #{name},
+        #{startDate},
+        #{endDate},
+        #{cost},
+        #{description},
+        #{createTime},
+        #{createBy},
+        #{editTime},
+        #{editBy}
+        )
+    </insert>
+</mapper>

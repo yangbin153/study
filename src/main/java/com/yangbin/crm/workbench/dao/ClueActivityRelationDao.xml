@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+ namespace：必须有值，自定义的唯一字符串
+ 推荐使用：dao 接口的全限定名称
+-->
+<mapper namespace="com.yangbin.crm.workbench.dao.ClueActivityRelationDao">
+    <!--
+    <select>: 查询数据， 标签中必须是 select 语句
+    id: sql 语句的自定义名称，推荐使用 dao 接口中方法名称，
+    使用名称表示要执行的 sql 语句
+    resultType: 查询语句的返回结果数据类型，使用全限定类名
+    -->
+
+    <delete id="deleteRelationByClueId">
+        delete from tbl_clue_activity_relation where clueId = #{clueId}
+    </delete>
+
+    <select id="getRelationsByClueId" resultType="ClueActivityRelation">
+        select * from tbl_clue_activity_relation where clueId = #{clueId}
+    </select>
+
+    <delete id="unbund">
+        delete from tbl_clue_activity_relation where id = #{id}
+    </delete>
+
+    <insert id="bund">
+        insert into tbl_clue_activity_relation (
+        id,
+        clueId,
+        activityId
+        ) values (
+        #{id},
+        #{clueId},
+        #{activityId}
+        );
+    </insert>
+
+    <select id="getCountByClueId" resultType="int">
+        <!--要执行的 sql 语句-->
+        select COUNT(*) from tbl_clue_activity_relation where clueId in
+        <foreach collection="array" item="clueId" open="(" close=")" separator=",">
+            #{clueId}
+        </foreach>
+    </select>
+
+    <delete id="deleteRelation">
+        delete from tbl_clue_activity_relation where clueId in
+        <foreach collection="array" item="clueId" open="(" close=")" separator=",">
+            #{clueId}
+        </foreach>
+    </delete>
+</mapper>
