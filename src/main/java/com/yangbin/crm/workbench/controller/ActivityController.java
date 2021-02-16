@@ -32,6 +32,7 @@ public class ActivityController {
     @RequestMapping("/getUserList.do")
     @ResponseBody
     public List<User> getUserList(){
+        
         List<User> userList = userService.getUserList();
         return userList;
     }
